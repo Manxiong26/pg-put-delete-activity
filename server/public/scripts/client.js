@@ -8,6 +8,9 @@ function addClickHandlers() {
   $('#submitBtn').on('click', handleSubmit);
 
   // TODO - Add code for edit & delete buttons
+  $(`#bookShelf`).on('click', '.read-up', putReadHandler);
+  $(`#bookShelf`).on('click', '.read-down', putUnReadHandler);
+  $(`#bookShelf`).on('click', '.delete-book', deleteBooks);
 }
 
 function handleSubmit() {
@@ -42,8 +45,8 @@ function refreshBooks() {
   }).then(function(response) {
     console.log(response);
   for(let i = 0; i < response.length; i += 1) {
-      // let book = books[i];
-    $('#bookShelf').append(`
+       let newBook =
+    $(`
       <tr>
         <td>${response[i].title}</td>
         <td>${response[i].author}</td>
@@ -55,6 +58,8 @@ function refreshBooks() {
             <button class="delete-book" data-id"${response[i].id}">Delete!</button>
       </tr>
     `);
+    newBook.data('id', response[i].id);
+    $(`#bookShelf`).append(newBook)
   }
 //    renderBooks(response);
 //  })
@@ -63,8 +68,49 @@ function refreshBooks() {
   });
 }
 
+function putReadHandler(){
+  readOnBook($(this).data("id"), "up");
+}
 
+function putUnReadHandler(){
+  readOnBook($(this).data("id"), "down");
+}
 
+function readOnBook(bookId, readDirection){
+  $.ajax({
+    method: 'PUT',
+    url: `/awesomereads/${bookId}`,
+    data: {
+        direction: readDirection
+    }
+  })
+  .then( function(response){
+    
+    refreshBooks();
+  })
+  .catch(function( error) {
+    alert(`Error on read on a book.`, error)
+  });
+}
+
+function delteBooksHandler(){
+  deleteBooks($(this).data("id"))
+}
+
+function deleteBooks(bookId){
+  $.ajax({
+    method: 'DELETE',
+    url: `awesomereads/${bookId}`,
+  })
+  .then(function (response) {
+    console.log('Deleted Book WOOT WOOT!', response);
+    
+    refreshBooks();
+  })
+  .catch(function (error) {
+    alert(`Error on deleting book`, error)
+  });
+}
 // Displays an array of books to the DOM
 // function renderBooks(books) {
 //   $('#bookShelf').empty();

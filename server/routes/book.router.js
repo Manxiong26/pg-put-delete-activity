@@ -42,16 +42,18 @@ router.put('/:id', (req, res) =>{
   console.log(req.body);
   let bookId = req.params.id;
   let direction = req.body.direction;
-  let sqlText = '';
-  if(direction === 'up') {
-    sqlText = `UPDATE "books" SET "title"=title-1 WHERE "id"=$1`;
-  } else if (direction === 'down') {
-    sqlText = `UPDATE "books" SET "title"=title+1 WHERE "id"=$1`;
+  let sqlText = ``;
+  if(direction === `up`) {
+    sqlText = `UPDATE "books" SET "title"=title-1 WHERE "id"=$1;`;
+  } else if (direction === `down`) {
+    sqlText = `UPDATE "books" SET "title"=title+1 WHERE "id"=$1;`;
   } else {
     res.sendStatus(500);
     return;
   }
-  pool.query(sqlText, [bookId]).then((resDB) => {
+  pool.query(sqlText, [bookId])
+    .then(response => {
+      console.log('Read Change', response);
     res.sendStatus(200);
   })
   .catch((error) => {
@@ -68,7 +70,7 @@ router.delete('/:id', (req, res) =>{
   let reqId = req.params.id;
   console.log('Delete request id', reqId);
 
-  let sqlText = 'DELETE FROM "songs" WHERE "id"=$1;';
+  let sqlText = 'DELETE FROM "books" WHERE "id"=$1;';
   pool.query(sqlText, [reqId])
     .then((result) => {
       console.log('Book deleted', result);
