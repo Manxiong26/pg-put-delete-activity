@@ -38,11 +38,46 @@ router.post('/',  (req, res) => {
 // Updates a book to show that it has been read
 // Request must include a parameter indicating what book to update - the id
 // Request body must include the content to update - the status
-
+router.put('/:id', (req, res) =>{
+  console.log(req.body);
+  let bookId = req.params.id;
+  let direction = req.body.direction;
+  let sqlText = '';
+  if(direction === 'up') {
+    sqlText = `UPDATE "books" SET "title"=title-1 WHERE "id"=$1`;
+  } else if (direction === 'down') {
+    sqlText = `UPDATE "books" SET "title"=title+1 WHERE "id"=$1`;
+  } else {
+    res.sendStatus(500);
+    return;
+  }
+  pool.query(sqlText, [bookId]).then((resDB) => {
+    res.sendStatus(200);
+  })
+  .catch((error) => {
+    res.sendStatus(500);
+    console.log('ERROR', error);
+    
+  });
+});
 
 // TODO - DELETE 
 // Removes a book to show that it has been read
 // Request must include a parameter indicating what book to update - the id
+router.delete('/:id', (req, res) =>{
+  let reqId = req.params.id;
+  console.log('Delete request id', reqId);
 
+  let sqlText = 'DELETE FROM "songs" WHERE "id"=$1;';
+  pool.query(sqlText, [reqId])
+    .then((result) => {
+      console.log('Book deleted', result);
+      res.sendStatus(200);
+    })
+    .catch((error) => {
+      console.log(`Error making database query ${sqlText}`, error);
+      res.sendStatus(500);
+    });
+});
 
 module.exports = router;
