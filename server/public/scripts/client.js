@@ -44,8 +44,8 @@ function refreshBooks() {
     url: '/books'
   }).then(function(response) {
     console.log(response);
-  for(let i = 0; i < response.length; i += 1) {
-       let newBook =
+  for(let i = 0; i < response.length; i++) {
+       let newList =
     $(`
       <tr>
         <td>${response[i].title}</td>
@@ -56,10 +56,11 @@ function refreshBooks() {
         </td>
         <td>
             <button class="delete-book" data-id"${response[i].id}">Delete!</button>
+        </td>
       </tr>
     `);
-    newBook.data('id', response[i].id);
-    $(`#bookShelf`).append(newBook)
+    newList.data('id', response[i].id);
+    $(`#bookShelf`).append(newList)
   }
 //    renderBooks(response);
 //  })
@@ -79,7 +80,7 @@ function putUnReadHandler(){
 function readOnBook(bookId, readDirection){
   $.ajax({
     method: 'PUT',
-    url: `/awesomereads/${bookId}`,
+    url: `/awesomereads/books${bookId}`,
     data: {
         direction: readDirection
     }
@@ -100,7 +101,7 @@ function delteBooksHandler(){
 function deleteBooks(bookId){
   $.ajax({
     method: 'DELETE',
-    url: `awesomereads/${bookId}`,
+    url: `awesomereads/books/${bookId}`,
   })
   .then(function (response) {
     console.log('Deleted Book WOOT WOOT!', response);

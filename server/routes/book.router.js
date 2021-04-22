@@ -38,7 +38,7 @@ router.post('/',  (req, res) => {
 // Updates a book to show that it has been read
 // Request must include a parameter indicating what book to update - the id
 // Request body must include the content to update - the status
-router.put('/:id', (req, res) =>{
+router.put('/title:id', (req, res) =>{
   console.log(req.body);
   let bookId = req.params.id;
   let direction = req.body.direction;
